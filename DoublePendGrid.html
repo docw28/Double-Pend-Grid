@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js"></script>
 
 </head>
 <body>
@@ -22,6 +22,10 @@ function setup() {
   h = w;
   n = 0;
   fr = 481;
+  speedMult = 1;
+  defaultSpeed = 1;
+  defaultThickness = 5;
+  lineThickness = defaultThickness;
 
   col = {
     r: [0,230,255,255,255,153,1,1,1,51,128],
@@ -35,6 +39,25 @@ function setup() {
   pg = createGraphics(w, h);
   pg.background(72);
   pg.noStroke();
+
+  pg.fill(255);
+  pg.text(`Line thickness (default ${defaultThickness}):`, margin, margin);
+
+  thickInput = createInput(lineThickness);
+  thickInput.position(margin, margin*2 - 7);
+  thickInput.size(cell);
+
+  pg.text(`Speed (default: ${defaultSpeed}):`, margin, margin*3);
+
+  speedInput = createInput(speedMult);
+  speedInput.position(margin, margin*4 - 7);
+  speedInput.size(cell);
+
+  button = createButton('submit');
+  button.id = "button"
+  button.position(margin, margin * 5);
+  button.mousePressed(submit);
+
 }
 
 function draw() {
@@ -43,31 +66,45 @@ function draw() {
   image(pg, 0, 0);
 
   for (let i = 1; i <= noC; i++ ) {
-    x[i] = (d/2 * sin((n * i) * (TWO_PI / fr))) + margin + ((i + 0.5) * cell);
-    y[i] = -(d/2 * cos((n * i) * (TWO_PI / fr))) + margin + ((i + 0.5) * cell);
-    sidex[i] = (d/2 * sin((n * i) * (TWO_PI / fr))) + margin + (0.5 * cell);
-    topy[i] = -(d/2 * cos((n * i) * (TWO_PI / fr))) + margin + (0.5 * cell);
+    x[i] = (d/2 * sin((n * i) * (TWO_PI / (fr / speedMult)))) + margin + ((i + 0.5) * cell);
+    y[i] = -(d/2 * cos((n * i) * (TWO_PI / (fr / speedMult)))) + margin + ((i + 0.5) * cell);
+    sidex[i] = (d/2 * sin((n * i) * (TWO_PI / (fr / speedMult)))) + margin + (0.5 * cell);
+    topy[i] = -(d/2 * cos((n * i) * (TWO_PI / (fr / speedMult)))) + margin + (0.5 * cell);
   }
 
   for (let i = 1; i <= noC; i++ ) {
     ellipse(x[i], topy[i], 15);
     ellipse(sidex[i], y[i], 15);
     pg.fill(col.r[i], col.g[i], col.b[i]);
-    pg.ellipse(x[i], topy[i], 1);
-    pg.ellipse(sidex[i], y[i], 1);
+    pg.ellipse(x[i], topy[i], lineThickness);
+    pg.ellipse(sidex[i], y[i], lineThickness);
   }
 
   for (let i = 1; i <= noC; i++ ) {
     for (let j = 1; j <= noC; j++ ) {
       ellipse(x[i], y[j], 15);
-      r = sqrt((sq(col.r[i]) + sq(col.r[j])) / 2 );
+      r = sqrt((sq(col.r[i]) + sq(col.r[j])) / 2);
       g = sqrt((sq(col.g[i]) + sq(col.g[j])) / 2);
       b = sqrt((sq(col.b[i]) + sq(col.b[j])) / 2);
       pg.fill(r,g,b);
-      pg.ellipse(x[i], y[j], 1);
+      pg.ellipse(x[i], y[j], lineThickness);
     }
   }
 
+}
+
+function submit() {
+  lineThickness = thickInput.value();
+  thickInput.value(lineThickness);
+
+  speedMult = speedInput.value();
+  speedInput.value(speedMult);
+
+  pg.clear();
+
+  pg.fill(255);
+  pg.text(`Line thickness (default ${defaultThickness}):`, margin, margin);
+  pg.text(`Speed (default: ${defaultSpeed}):`, margin, margin*3);
 }
 
 </script>
