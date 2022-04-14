@@ -1,0 +1,75 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+
+</head>
+<body>
+
+<script>
+
+const x = [];
+const sidex = [];
+const y = [];
+const topy = [];
+let n, fr;
+let r, g, b = 0n;
+
+function setup() {
+
+  margin = 20;
+  cell = 111;
+  noC = 10;
+  d = 91;
+  w = (cell * (noC + 1)) + margin * 2;
+  h = w;
+  n = 0;
+  fr = 481;
+
+  col = {
+    r: [0,230,255,255,255,153,1,1,1,51,128],
+    g: [0,1,102,204,255,255,153,179,1,1,1],
+    b: [0,1,51,1,51,102,1,230,204,102,179]
+  };
+
+  createCanvas(w, h);
+  background(72);
+  noStroke();
+  pg = createGraphics(w, h);
+  pg.background(72);
+  pg.noStroke();
+}
+
+function draw() {
+  n++;
+  background(72);
+  image(pg, 0, 0);
+
+  for (let i = 1; i <= noC; i++ ) {
+    x[i] = (d/2 * sin((n * i) * (TWO_PI / fr))) + margin + ((i + 0.5) * cell);
+    y[i] = -(d/2 * cos((n * i) * (TWO_PI / fr))) + margin + ((i + 0.5) * cell);
+    sidex[i] = (d/2 * sin((n * i) * (TWO_PI / fr))) + margin + (0.5 * cell);
+    topy[i] = -(d/2 * cos((n * i) * (TWO_PI / fr))) + margin + (0.5 * cell);
+  }
+
+  for (let i = 1; i <= noC; i++ ) {
+    ellipse(x[i], topy[i], 15);
+    ellipse(sidex[i], y[i], 15);
+    pg.fill(col.r[i], col.g[i], col.b[i]);
+    pg.ellipse(x[i], topy[i], 1);
+    pg.ellipse(sidex[i], y[i], 1);
+  }
+
+  for (let i = 1; i <= noC; i++ ) {
+    for (let j = 1; j <= noC; j++ ) {
+      ellipse(x[i], y[j], 15);
+      r = sqrt((sq(col.r[i]) + sq(col.r[j])) / 2 );
+      g = sqrt((sq(col.g[i]) + sq(col.g[j])) / 2);
+      b = sqrt((sq(col.b[i]) + sq(col.b[j])) / 2);
+      pg.fill(r,g,b);
+      pg.ellipse(x[i], y[j], 1);
+    }
+  }
+
+}
+
+</script>
+
+</body>
